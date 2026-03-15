@@ -1,0 +1,155 @@
+---
+title: "W06-Reflection Essay-Introduction to Positron"
+author: "Bansi Khachar"
+date: '`r format(Sys.time())`'
+format: 
+  html: 
+    toc: true
+    toc-depth: 4
+    number-sections: true
+    code-link: true
+    embed-resources: true
+editor: visual
+execute: 
+  freeze: auto
+---
+
+# **Essay Responses**
+
+This reflection essay summarizes my experience with Positron, a modern IDE for data science made by Posit. It covers how I installed it, how it compares to RStudio, what AI tools are available, and my experience trying to get GitHub Copilot through the student education program. This essay is based on two videos — one about getting started with Positron and one about using AI inside it.
+
+## **Prompt 1-** Downloading and Installing Positron:
+
+I downloaded Positron from the official Posit website, agreed to the license, and installed it on my computer. When I opened it for the first time, it told me that no interpreters were found, meaning R and Python were not set up yet.
+
+To install Python, I used a tool called uv, which is a fast and modern way to manage Python versions. I opened the terminal inside Positron and ran a command to install uv, then ran another command to install Python. After closing and reopening Positron, Python was available and ready to use.
+
+To install R, I went to the official R website, downloaded the installer for my operating system, and followed the installation steps. After reopening Positron, both R and Python were available.
+
+For Git, I followed the instructions on the Git website. On a Mac, I first installed Homebrew and then used it to install Git. After reloading Positron, version control was fully working.
+
+One useful tip from the video is to always open a folder as your project rather than just a single file. Positron automatically sets your working directory when you open a folder, which keeps everything organized in one place.
+
+## **Prompt 2-** What I Like About Positron Compared to RStudio:
+
+After exploring Positron and watching the videos, I found several things I genuinely liked about it compared to RStudio.
+
+First, Positron supports both R and Python at the same time. I can run an R session and a Python session simultaneously, and even switch between different versions of each language. RStudio does have some Python support but it feels like an afterthought. In Positron, both languages are treated equally.
+
+Second, the Data Explorer in Positron is much more powerful than RStudio's basic data viewer. I can sort and filter columns, see a summary of each column including missing values, and explore filtered versions of your data without actually changing the original dataset. There is even a button that converts your sorting and filtering actions into real code I can reuse later.
+
+Third, because Positron is built on the same framework as VS Code, it supports thousands of extensions from the VS Code marketplace. This gives I access to many more tools than RStudio offers.
+
+Fourth, the Git features in Positron are more advanced. You can see full commit histories and access more Git commands directly inside the IDE.
+
+That said, RStudio is still my preferred tool for work that is purely in R. It is more stable and has been optimized for R over many years. Positron really shines when I are working with both R and Python or using AI tools.
+
+## **Prompt 3** — Ways to Use AI Inside Positron:
+
+Positron has three main AI tools and each one serves a different purpose.
+
+-   **Positron Assistant** is built directly into Positron. It is the main AI helper and the most powerful one. What makes it unique is that it already knows your environment — it can see your open scripts, your variables, your plots, and any errors in your console. So I do not need to copy and paste anything. You just ask a question and it understands the context. You can use it in three ways — asking questions, editing code with your approval, or letting it run tasks automatically. You can also trigger it inline while typing by pressing Command I on Mac or Control I on Windows. This tool requires a paid Anthropic API key.
+
+-   **Databot** is a separate extension you install from the marketplace. It is designed for exploring new datasets quickly. You give it data, it writes and runs code, looks at the results, and suggests what to do next. It keeps doing this in a loop until you are satisfied. At the end it can automatically write a full summary report for you. This also requires a paid API key.
+
+-   **GitHub Copilot** works quietly in the background while you type and suggests the next lines of code automatically. Unlike the other two, it is completely free for students through the GitHub Education program.
+
+    The most important thing about all three tools is that they always show you the actual code they suggest. Nothing runs without you seeing it first, which keeps you in control of your analysis.
+
+## **Prompt 4** — Which AI Tools Were Set Up:
+
+One of the main AI tools I explored is **GitHub Copilot**, which can be integrated with Positron. GitHub Copilot provides real-time coding suggestions and can generate code based on the context of the file. This makes it easier to write scripts more quickly and reduces the time spent searching for examples online.\
+\
+Among these tools, GitHub Copilot felt the most useful for everyday coding tasks. It can quickly suggest code for creating data frames, writing loops, or generating plots. The Positron Assistant is also beneficial because it helps explain code and assist with debugging when errors occur.
+
+## **Prompt 5** — GitHub Copilot Education Account:
+
+An application was submitted for the GitHub Education program to get free access to GitHub Copilot as a student. Unfortunately the application got rejected. This can happen when the documents submitted for verification, like a student ID or school email, do not meet GitHub's requirements.
+
+Even though the application did not go through, the process was still a good learning experience. It became clear that to get approved, a school issued email or proof of enrollment like a student ID or enrollment letter is needed. Once approved, Copilot installs directly into Positron as an extension and starts giving code suggestions while typing.
+
+Below is a screenshot showing that my GitHub account is connected.
+
+![](images/clipboard-636406310.png)
+
+Example:
+
+```{r}
+
+# Simulate dataset and create a ggplot scatter with genre fits; return data and plot object.
+
+set.seed(2026)
+library(tidyverse)
+
+n <- 500
+genres <- c("Classical", "Instrumental", "Pop", "Rock", "Electronic", "HipHop")
+
+df <- tibble(
+  id = seq_len(n),
+  age = sample(17:30, n, replace = TRUE),
+  gender = sample(c("F","M","Other"), n, replace = TRUE, prob = c(.55,.44,.01)),
+  hours_listen_week = round(rlnorm(n, meanlog = log(6), sdlog = 0.9), 1),
+  music_genre = sample(genres, n, replace = TRUE, prob = c(.12, .10, .28, .18, .18, .14)),
+  hours_study_week = round(rnorm(n, mean = 12, sd = 4) - 0.15 * rlnorm(n, meanlog = log(6), sdlog = 0.9), 1)
+) |>
+  mutate(
+    hours_study_week = pmax(0.5, hours_study_week),
+    prefers_music_while_studying = case_when(
+      music_genre %in% c("Classical","Instrumental") ~ sample(c("Yes","No"), n(), replace = TRUE, prob = c(.7,.3)),
+      TRUE ~ sample(c("Yes","No"), n(), replace = TRUE, prob = c(.45,.55))
+    ),
+    # genre-specific effect on concentration (positive for classical/instrumental, neutral or slightly negative for others)
+    genre_effect = case_when(
+      music_genre %in% c("Classical","Instrumental") ~ 3,
+      music_genre == "Pop" ~ 0,
+      music_genre == "Rock" ~ -1,
+      music_genre == "Electronic" ~ -0.8,
+      music_genre == "HipHop" ~ -0.5,
+      TRUE ~ 0
+    ),
+    concentration_score = round(50 + 2.2 * hours_study_week - 0.9 * hours_listen_week + genre_effect + rnorm(n, 0, 6), 1),
+    exam_score = round(40 + 1.9 * hours_study_week - 0.6 * hours_listen_week + 0.8 * concentration_score/10 + rnorm(n, 0, 7), 1),
+    gpa_est = pmin(4.0, pmax(0.7, (exam_score / 25)))  # rough mapping to 0.7-4.0
+  ) |>
+  select(-genre_effect)
+
+# compute correlation matrix for numeric vars of interest
+num_vars <- df |> select(hours_listen_week, hours_study_week, concentration_score, exam_score, gpa_est)
+corr <- cor(num_vars, use = "pairwise.complete.obs")
+
+# Create scatter plot: hours_listen_week vs exam_score colored by genre with linear fit per genre
+p <- ggplot(df, aes(x = hours_listen_week, y = exam_score, color = music_genre)) +
+  geom_point(alpha = 0.55, size = 2) +
+  geom_smooth(method = "lm", se = FALSE, linewidth = 0.8) +
+  scale_color_brewer(type = "qual", palette = "Dark2") +
+  labs(
+    title = "Weekly music listening vs. exam score (linear fit by genre)",
+    x = "Hours listening per week",
+    y = "Exam score (simulated)",
+    color = "Music genre"
+  ) +
+  theme_minimal(base_size = 13)
+
+# Return a useful object
+list(
+  dataset = df,
+  correlation = round(corr, 3),
+  plot = p
+)
+```
+
+Based on what was shown in the videos, here is an honest take on whether GitHub Copilot would be helpful or distracting.
+
+On the helpful side, it speeds up coding by suggesting whole lines or blocks of code while typing. It can also help with learning because the suggestions show different ways to write things. It works quietly and all it takes is pressing Tab to accept a suggestion, so it does not slow anything down.
+
+On the distracting side, there is a real risk of accepting suggestions without understanding them, which can get in the way of actually learning. The suggestions are also not always right, especially for more complex tasks. Every suggestion still needs to be reviewed carefully before using it.
+
+Overall, GitHub Copilot seems most useful as a tool to help write code faster rather than as something to rely on completely. It works best when the task is already clear and just needs to be typed out quickly.
+
+## **Prompt 6** — Publishing to GitHub Pages:
+
+After finishing the report, it was published to GitHub Pages. One thing that was a bit confusing at first was the difference between a GitHub repository and GitHub Pages. A repository just stores the project files. GitHub Pages actually takes the rendered HTML file and turns it into a live website that can be opened in any browser. They are two different things even though they are both on GitHub.
+
+To publish, the Quarto file was first rendered into an HTML file inside Positron. Then all the files were pushed to a GitHub repository. In the repository settings, the Pages section was found, the source was set to the main branch, and it was saved. After a few minutes GitHub gave a public URL for the report.
+
+<https://bansikhachar29.github.io/Class-Projects/>
